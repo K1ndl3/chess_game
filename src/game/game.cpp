@@ -18,10 +18,12 @@ Game::Game(Game &old_game)
 void Game::run()
 {
     Board board;
+    board.setDefaultBoard();
     while (!WindowShouldClose()) {
         BeginDrawing();
         board.generateBoard();
-        board.setDefaultBoard();
+        board.drawBoard();
+        board.selectSquare();
         ClearBackground(WHITE);
         EndDrawing();
     }

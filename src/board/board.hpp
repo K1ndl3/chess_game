@@ -47,6 +47,12 @@ Vector2 selectSquare();
  * @details Take the current mouse position and return the what square
  *          the mouse is on when left-click.
  */
+
+bool userInput();
+/**
+ * @brief Take the desired user move and decide if that move is legal
+ * @details if th move is legal, then move the piece 
+ */
 private:
     int _cell_size = 100;
     int _board_width = 800;
