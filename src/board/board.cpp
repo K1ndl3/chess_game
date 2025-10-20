@@ -97,24 +97,49 @@ void Board::drawBoard()
     }
 }
 
+void Board::movePiece(int moveCount)
+{
+    // simple wrapper: process user input (two clicks) to drive moves
+    userInput();
+}
+
+
 Vector2 Board::selectSquare()
 {
-    // need to define the boundary of the board in pixels
-    // we need to convert the current pixel location to the row and col position on the board
-    Vector2 squareLocation;
+    Vector2 squareLocation{-1, -1}; // default invalid
+
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         Vector2 mousePos = GetMousePosition();
         int xPos = mousePos.x;
         int yPos = mousePos.y;
-        if (xPos > _startX && xPos <  WIN_WIDTH - _startX && yPos > _startY && yPos < WIN_HEIGHT - _startY) {
 
-            int column = (xPos - _startX) / _cell_size;
-            int row    = (yPos - _startY) / _cell_size;
-            std::cout << "current coord: " << column << " " << row << '\n';
+        if (xPos >= _startX && xPos < _startX + _board_width &&
+            yPos >= _startY && yPos < _startY + _board_height) {
 
-            squareLocation.x = column;
+            int col = (xPos - _startX) / _cell_size;
+            int row = (yPos - _startY) / _cell_size;
+
+            squareLocation.x = col;
             squareLocation.y = row;
+
+            // highlight the square
+            DrawRectangle(_startX + col * _cell_size, _startY + row * _cell_size,
+                          _cell_size, _cell_size, YELLOW);
+            std::cout << "Selected square: " << col << ", " << row << "\n";
         }
     }
+
     return squareLocation;
+}
+
+bool Board::userInput()
+{
+    static Vector2 firstClick = {-1.0f, -1.0f};
+
+   // work to implement this function by yourself
+}
+
+void Board::movePieceFromTo(Vector2 startPos, Vector2 endPos)
+{
+    // work to implement this function by yourself
 }

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <utility>
+#include <cmath>
 #include "raylib.h"
 #include "../player/player.hpp"
 #include "../piece/piece.hpp"
@@ -17,6 +18,9 @@ Board() {
     }
     std::cout << "[BOARD_GENERATED]";
 }
+
+inline void setMoveCount() { _move_count++; };
+
 bool generateBoard();
 /**
  * @brief generate the board and assets in standard chess starting position
@@ -33,11 +37,11 @@ void drawBoard();
  */
 
 // update board
-void updateBoard(Player& player, Vector2 startPos, Vector2 endPos);
+void movePiece(int moveCount);
 /**
  * @brief Change the position of the pieces on the board.
- * @details Select the starting index and end index.
- *          Should have a move validator function for the piece type. 
+ * @details Select the end index.
+ * TODO: Should have a move validator function for the piece type. 
  */
 
 // select square
@@ -46,9 +50,12 @@ Vector2 selectSquare();
  * @brief Returns the square we have selected as a vector.
  * @details Take the current mouse position and return the what square
  *          the mouse is on when left-click.
+ * @returns a vector of the selected move in cols and rows
  */
 
 bool userInput();
+    // move a piece from start to end (column=x, row=y in Vector2)
+    void movePieceFromTo(Vector2 startPos, Vector2 endPos);
 /**
  * @brief Take the desired user move and decide if that move is legal
  * @details if th move is legal, then move the piece 
@@ -61,4 +68,6 @@ private:
     int _startX = 25;
     int _startY = 100;
     std::vector<std::vector<std::unique_ptr<Piece>>> board_array;
+    int _move_count = 0;
+    bool _ready = false;
 };

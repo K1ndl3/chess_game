@@ -35,6 +35,11 @@ class Piece {
         return _assets_path[pieceInfo];
     }
 
+    void generatePossibleMoves(Vector2 mousePos, Piece currPiece);
+    /**
+     * @brief take the current piece and show the use the possible moves
+     * @details 
+     */
     
     void initTexture();
 
