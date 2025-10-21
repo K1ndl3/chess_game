@@ -21,12 +21,12 @@ void Game::run()
     board.setDefaultBoard();
     while (!WindowShouldClose()) {
         BeginDrawing();
-        ClearBackground(WHITE);
         // process input (select/move)
         board.userInput();
         // draw board and pieces
         board.generateBoard();
         board.drawBoard();
+        ClearBackground(WHITE);
         EndDrawing();
     }
     CloseWindow();

@@ -92,6 +92,9 @@ void Board::drawBoard()
             Vector2 origin_vec{0,0};
             float rotation = 0;  
             DrawTexturePro(currPieceText, sourceRect, destRect, origin_vec, rotation, WHITE);
+            if (_firstClick.x > 0) {
+                highlightSelectedSquare(_firstClick, 38);
+            }
             // refactor this so that we load the textures on the setDefaultBoard function once and then draw in the draw function
         }
     }
@@ -121,10 +124,6 @@ Vector2 Board::selectSquare()
 
             squareLocation.x = col;
             squareLocation.y = row;
-
-            // highlight the square
-            DrawRectangle(_startX + col * _cell_size, _startY + row * _cell_size,
-                          _cell_size, _cell_size, YELLOW);
             std::cout << "Selected square: " << col << ", " << row << "\n";
         }
     }
@@ -135,14 +134,15 @@ Vector2 Board::selectSquare()
 bool Board::userInput()
 {
     Vector2 clicked = selectSquare();
-    if (clicked.x < 0) return false; // go back to this line later and check what happens if we dont include it
+    if (clicked.x < 0) return false;
+    if (_firstClick.x == clicked.x && _firstClick.y == clicked.y) return false;
     if (_firstClick.x < 0) {
         if (board_array[(int)clicked.y][(int)clicked.x]) {
             _firstClick = clicked;
         }
         return false;
     }
-
+    
     movePieceFromTo(_firstClick, clicked);
     _firstClick = {-1,-1};
     return true;
@@ -150,10 +150,7 @@ bool Board::userInput()
 
 void Board::movePieceFromTo(Vector2 startPos, Vector2 endPos)
 {
-    // we are to use the std::move function to move the startpos to endpos
-    // since the userInput function handles validation, we dont need to validate
-    // take the piece at startpos and move to endpos
-    // deconstruct the startpos and endpos Vector2
+
     int startCol = startPos.x;
     int startRow = startPos.y;
 
@@ -166,4 +163,13 @@ void Board::movePieceFromTo(Vector2 startPos, Vector2 endPos)
     nextPiecePos = nullptr;
 
     nextPiecePos = std::move(currPiece);
+}
+
+void Board::highlightSelectedSquare(Vector2 firstClick, int alphaLvl)
+{
+    const static Color highlightColor = {128, 0, 128, alphaLvl};
+
+    DrawRectangle(_startX + _firstClick.x * _cell_size,
+                  _startY + _firstClick.y * _cell_size,
+                  _cell_size, _cell_size, highlightColor);
 }

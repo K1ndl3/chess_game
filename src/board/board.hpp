@@ -60,6 +60,8 @@ bool userInput();
  * @brief Take the desired user move and decide if that move is legal
  * @details if th move is legal, then move the piece 
  */
+
+void highlightSelectedSquare(Vector2 firstClick, int alphaLvl);
 private:
     int _cell_size = 100;
     int _board_width = 800;
@@ -71,4 +73,5 @@ private:
     int _move_count = 0;
     bool _ready = false;
     Vector2 _firstClick {-1,-1};
+    Vector2 _secondClick {-1,-1};
 };
