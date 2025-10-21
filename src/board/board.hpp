@@ -70,4 +70,5 @@ private:
     std::vector<std::vector<std::unique_ptr<Piece>>> board_array;
     int _move_count = 0;
     bool _ready = false;
+    Vector2 _firstClick {-1,-1};
 };

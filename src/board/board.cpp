@@ -134,12 +134,36 @@ Vector2 Board::selectSquare()
 
 bool Board::userInput()
 {
-    static Vector2 firstClick = {-1.0f, -1.0f};
+    Vector2 clicked = selectSquare();
+    if (clicked.x < 0) return false; // go back to this line later and check what happens if we dont include it
+    if (_firstClick.x < 0) {
+        if (board_array[(int)clicked.y][(int)clicked.x]) {
+            _firstClick = clicked;
+        }
+        return false;
+    }
 
-   // work to implement this function by yourself
+    movePieceFromTo(_firstClick, clicked);
+    _firstClick = {-1,-1};
+    return true;
 }
 
 void Board::movePieceFromTo(Vector2 startPos, Vector2 endPos)
 {
-    // work to implement this function by yourself
+    // we are to use the std::move function to move the startpos to endpos
+    // since the userInput function handles validation, we dont need to validate
+    // take the piece at startpos and move to endpos
+    // deconstruct the startpos and endpos Vector2
+    int startCol = startPos.x;
+    int startRow = startPos.y;
+
+    int endCol = endPos.x;
+    int endRow = endPos.y;
+
+    auto& currPiece = board_array[startRow][startCol];
+    
+    auto& nextPiecePos = board_array[endRow][endCol];
+    nextPiecePos = nullptr;
+
+    nextPiecePos = std::move(currPiece);
 }
