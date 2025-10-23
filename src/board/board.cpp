@@ -88,7 +88,7 @@ void Board::drawBoard()
             // location of where the piece should sit
             // take the row and col and resize to fill the whole rect
             // the final size should be about 100x100
-            Rectangle destRect {col*_cell_size + _startX + 11, row *_cell_size + _startY + 16, 80, 80};
+            Rectangle destRect {(float)(col*_cell_size + _startX + 11), (float)(row *_cell_size + _startY + 16), 80, 80};
             Vector2 origin_vec{0,0};
             float rotation = 0;  
             DrawTexturePro(currPieceText, sourceRect, destRect, origin_vec, rotation, WHITE);
@@ -134,6 +134,10 @@ Vector2 Board::selectSquare()
 bool Board::userInput()
 {
     Vector2 clicked = selectSquare();
+    if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+        _firstClick = {-1,-1};
+        return false;
+    }
     if (clicked.x < 0) return false;
     if (_firstClick.x == clicked.x && _firstClick.y == clicked.y) return false;
     if (_firstClick.x < 0) {
@@ -144,30 +148,34 @@ bool Board::userInput()
     }
     
     movePieceFromTo(_firstClick, clicked);
+    setMoveCount();
+    std::cout << "move count: " << _move_count << '\n';
     _firstClick = {-1,-1};
     return true;
 }
 
 void Board::movePieceFromTo(Vector2 startPos, Vector2 endPos)
 {
-
     int startCol = startPos.x;
     int startRow = startPos.y;
+    auto& currPiece = board_array[startRow][startCol];
+    // this is where our validator function will come in
+    // we will call if (currPiece.validateMove(endPos) != true) return false
 
     int endCol = endPos.x;
     int endRow = endPos.y;
 
-    auto& currPiece = board_array[startRow][startCol];
     
     auto& nextPiecePos = board_array[endRow][endCol];
     nextPiecePos = nullptr;
 
     nextPiecePos = std::move(currPiece);
+    nextPiecePos->setCurrPos(endPos);
 }
 
 void Board::highlightSelectedSquare(Vector2 firstClick, int alphaLvl)
 {
-    const static Color highlightColor = {128, 0, 128, alphaLvl};
+    const static Color highlightColor = {128, 0, 128, (unsigned char)alphaLvl};
 
     DrawRectangle(_startX + _firstClick.x * _cell_size,
                   _startY + _firstClick.y * _cell_size,

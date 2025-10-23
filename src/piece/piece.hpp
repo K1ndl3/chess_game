@@ -21,13 +21,16 @@ class Piece {
     inline Texture2D getTexture() const { return _texture; };
     inline int getRowPos() const { return _rowPos; };
     inline int getColPos() const { return _colPos; };
+    inline Vector2 getCurrPos() const { return _currPos; };
 
     inline void setRowPos(int newRowPos) {
         _rowPos = newRowPos;
     }
-
     inline void setColPos(int newColPos) {
         _colPos = newColPos;
+    }
+    inline void setCurrPos(Vector2 pos) {
+        _currPos = pos;
     }
 
     const char* getAssetPath(Type t, Color c) {
@@ -39,9 +42,28 @@ class Piece {
     /**
      * @brief take the current piece and show the use the possible moves
      * @details 
+     * @todo change signature and implement after validateMove()
      */
     
     void initTexture();
+
+    bool validateMove(Vector2 endingPos, int moveCount, const Board& board);
+    /**
+     * @brief 
+     *  each piece will be able to handle its own move validation
+     * @interface
+     *  in Board::movePieceFromTo -> _board_array[startingPos.x][startingPos.y]->validateMove()
+     * @details 
+     *  have a big ass switch statement that will check this.getType()
+     *  work in conjunction with the Boad::movePieceFromTo()
+     *  we will use Piece::validateMove() inside Board::movePieceFromTo()
+     * @implements
+     *  deconstruct the startingPos to get the current piece
+     *  currPiece = _board_array[startingpos.x][startingpos.y]
+     *  we can then check if the endingPos can be reached with the current piece type
+     * @return 
+     *  return a boolean to indicate if the desired move is possible
+     */
 
 
     private:
@@ -50,6 +72,7 @@ class Piece {
     Texture2D _texture;
     int _rowPos;
     int _colPos;
+    Vector2 _currPos;
 
     std::map<std::pair<Piece::Type, Piece::Color>, const char*> _assets_path {
         {{Piece::Type::Pawn, Piece::Color::White}, "./assets/white_pawn.png"},

@@ -61,7 +61,18 @@ bool userInput();
  * @details if th move is legal, then move the piece 
  */
 
+
 void highlightSelectedSquare(Vector2 firstClick, int alphaLvl);
+
+Piece* at(int row, int col) {
+    if (row < 0 || row >= _num_row || col < 0 || col >= _num_row) return nullptr;
+    return board_array[row][col] ? board_array[row][col].get() : nullptr;
+}
+const Piece* at(int row, int col) const {
+    if (row < 0 || row >= _num_row || col < 0 || col >= _num_row) return nullptr;
+    return board_array[row][col] ? board_array[row][col].get() : nullptr;
+}
+
 private:
     int _cell_size = 100;
     int _board_width = 800;
