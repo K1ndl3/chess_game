@@ -4,6 +4,8 @@
 #include <string>
 #include <utility>
 #include "raylib.h"
+class Board;
+
 class Piece {
     public:
 
@@ -46,24 +48,6 @@ class Piece {
      */
     
     void initTexture();
-
-    bool validateMove(Vector2 endingPos, int moveCount, const Board& board);
-    /**
-     * @brief 
-     *  each piece will be able to handle its own move validation
-     * @interface
-     *  in Board::movePieceFromTo -> _board_array[startingPos.x][startingPos.y]->validateMove()
-     * @details 
-     *  have a big ass switch statement that will check this.getType()
-     *  work in conjunction with the Boad::movePieceFromTo()
-     *  we will use Piece::validateMove() inside Board::movePieceFromTo()
-     * @implements
-     *  deconstruct the startingPos to get the current piece
-     *  currPiece = _board_array[startingpos.x][startingpos.y]
-     *  we can then check if the endingPos can be reached with the current piece type
-     * @return 
-     *  return a boolean to indicate if the desired move is possible
-     */
 
 
     private:

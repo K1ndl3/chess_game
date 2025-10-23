@@ -146,7 +146,6 @@ bool Board::userInput()
         }
         return false;
     }
-    
     movePieceFromTo(_firstClick, clicked);
     setMoveCount();
     std::cout << "move count: " << _move_count << '\n';

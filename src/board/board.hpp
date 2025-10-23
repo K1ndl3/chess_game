@@ -73,6 +73,10 @@ const Piece* at(int row, int col) const {
     return board_array[row][col] ? board_array[row][col].get() : nullptr;
 }
 
+const std::vector<std::vector<std::unique_ptr<Piece>>>& getBoard() const {
+    return board_array;
+}
+
 private:
     int _cell_size = 100;
     int _board_width = 800;
