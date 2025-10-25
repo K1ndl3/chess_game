@@ -146,6 +146,7 @@ bool Board::userInput()
         }
         return false;
     }
+    if(!validateMove(_firstClick, clicked, _move_count)) return false;
     movePieceFromTo(_firstClick, clicked);
     setMoveCount();
     std::cout << "move count: " << _move_count << '\n';
@@ -170,6 +171,54 @@ void Board::movePieceFromTo(Vector2 startPos, Vector2 endPos)
 
     nextPiecePos = std::move(currPiece);
     nextPiecePos->setCurrPos(endPos);
+}
+
+bool Board::validateMove(Vector2 startingPos, Vector2 endingPos, int moveCount)
+{
+    // so we have a nullptr deref issue
+    int sR = (int)startingPos.x;
+    int sC = (int)startingPos.y;
+
+    int eR = (int)endingPos.x;
+    int eC = (int)endingPos.y;
+    int colDifference = std::abs(sC - eC);
+    int rowDifference = std::abs(sR - eR);
+
+    const auto& currPiece = board_array[sC][sR];
+    const auto& targetSquare = board_array[eC][eR];
+
+    auto CurrPieceType = currPiece->getType();
+    if (targetSquare) {
+        if (CurrPieceType == targetSquare->getType()) {
+            return false;
+        }
+    }
+
+    if (moveCount % 2 == 0) {
+        currPiece->getColor() == Piece::Color::White;
+        return false;
+    } else if (moveCount % 2 != 0) {
+        currPiece->getColor() == Piece::Color::Black;
+    }
+
+    switch (CurrPieceType)
+    {
+    case (Piece::Type::Pawn) :{
+        if (colDifference > 2 || rowDifference != 0) {
+            std::cout << "Invalid move.\n";
+            return false;
+        }    
+        return true;
+        }
+    case (Piece::Type::King) :{
+
+        return true;
+    }
+    
+    default:
+        return true;
+    }
+
 }
 
 void Board::highlightSelectedSquare(Vector2 firstClick, int alphaLvl)
