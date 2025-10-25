@@ -195,11 +195,11 @@ bool Board::validateMove(Vector2 startingPos, Vector2 endingPos, int moveCount)
     }
 
     if (moveCount % 2 == 0 && currPiece->getColor() == Piece::Color::White) { // if move count is even and we try to move a white piece
-        std::cout << "condition hit a.\n";
+        std::cout << "Black turn to move.\n";
         return false;
     }
     if (moveCount % 2 != 0 && currPiece->getColor() == Piece::Color::Black) { // if move count is odd and we try to move a black piece
-        std::cout << "condition hit b.\n";
+        std::cout << "White turn to move.\n";
         return false;
     }
 
@@ -212,7 +212,21 @@ bool Board::validateMove(Vector2 startingPos, Vector2 endingPos, int moveCount)
         }    
         return true;
         }
-    
+    case (Piece::Type::King) :{
+        return true;
+    }
+    case (Piece::Type::Queen) : {
+        return true;
+    }
+    case (Piece::Type::Knight) : {
+        return true;
+    }
+    case (Piece::Type::Rook) : {
+        return true;
+    }
+    case (Piece::Type::Bishop) : {
+        return true;
+    }
     default:
         return true;
     }
