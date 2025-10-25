@@ -93,7 +93,7 @@ private:
     int _startX = 25;
     int _startY = 100;
     std::vector<std::vector<std::unique_ptr<Piece>>> board_array;
-    int _move_count = 0;
+    int _move_count = 1;
     bool _ready = false;
     Vector2 _firstClick {-1,-1};
     Vector2 _secondClick {-1,-1};
