@@ -70,7 +70,7 @@ bool validateMove(Vector2 startingPos, Vector2 endingPos, int moveCount);
  *  deconstruct the ending pos to check for nullprt
  */
 
-void highlightSelectedSquare(Vector2 firstClick, int alphaLvl);
+void highlightSelectedSquare(Vector2 firstClick, int alphaLvl, Color color);
 
 inline Piece* at(int row, int col) {
     if (row < 0 || row >= _num_row || col < 0 || col >= _num_row) return nullptr;
@@ -85,6 +85,8 @@ inline const std::vector<std::vector<std::unique_ptr<Piece>>>& getBoard() const 
     return board_array;
 }
 
+inline void setHighlightColor(Color newColor) { highlightColor = newColor; }
+
 private:
     int _cell_size = 100;
     int _board_width = 800;
@@ -97,4 +99,5 @@ private:
     bool _ready = false;
     Vector2 _firstClick {-1,-1};
     Vector2 _secondClick {-1,-1};
+    Color highlightColor; 
 };

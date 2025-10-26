@@ -93,11 +93,12 @@ void Board::drawBoard()
             float rotation = 0;  
             DrawTexturePro(currPieceText, sourceRect, destRect, origin_vec, rotation, WHITE);
             if (_firstClick.x > 0) {
-                highlightSelectedSquare(_firstClick, 38);
+                highlightSelectedSquare(_firstClick, 38, highlightColor);
             }
             // refactor this so that we load the textures on the setDefaultBoard function once and then draw in the draw function
         }
     }
+    setHighlightColor(PURPLE); 
 }
 
 void Board::movePiece(int moveCount)
@@ -146,7 +147,11 @@ bool Board::userInput()
         }
         return false;
     }
-    if(!validateMove(_firstClick, clicked, _move_count)) return false;
+    if(!validateMove(_firstClick, clicked, _move_count)) {
+        setHighlightColor(RED);
+        std::cout << "Invalid move.1";
+        return false;
+    }   
     movePieceFromTo(_firstClick, clicked);
     setMoveCount();
     std::cout << "move count: " << _move_count << '\n';
@@ -233,11 +238,11 @@ bool Board::validateMove(Vector2 startingPos, Vector2 endingPos, int moveCount)
 
 }
 
-void Board::highlightSelectedSquare(Vector2 firstClick, int alphaLvl)
+void Board::highlightSelectedSquare(Vector2 firstClick, int alphaLvl, Color color)
 {
     const static Color highlightColor = {128, 0, 128, (unsigned char)alphaLvl};
 
     DrawRectangle(_startX + _firstClick.x * _cell_size,
                   _startY + _firstClick.y * _cell_size,
-                  _cell_size, _cell_size, highlightColor);
+                  _cell_size, _cell_size, color);
 }
