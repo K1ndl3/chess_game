@@ -80,15 +80,13 @@ Game::run()
 
 ```bash
 # Navigate to the project directory
-cd chess_game
+cd raylib_chess
 
-# Create a build directory
-mkdir build
+# Go To build directory
 cd build
 
 # Compile
-cmake ..
-make
+bash build.bash
 
 # Run the executable
 ./main
@@ -169,3 +167,6 @@ Created by K1ndl3
 ---
 
 **Enjoy playing chess!** ♚♕
+
+![Chess1](./README_ASSETS/Chess1.png)
+![Chess1](./README_ASSETS/Chess2.png)

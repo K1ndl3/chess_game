@@ -7,6 +7,8 @@
 #include "raylib.h"
 #include "../player/player.hpp"
 #include "../piece/piece.hpp"
+#define COLOR_PURPLE_HIGHLIGHT {128, 0, 128, 38}
+#define COLOR_RED_HIGHLIGHT {128,0,0,38}
 class Board{
 public:
 // implement the rule of 5 
@@ -87,6 +89,9 @@ inline const std::vector<std::vector<std::unique_ptr<Piece>>>& getBoard() const 
 
 inline void setHighlightColor(Color newColor) { highlightColor = newColor; }
 
+    inline bool gameOver() const { return _gameOver; }
+    inline Piece::Color getWinnerColor() const { return _winnerColor; }
+
 private:
     int _cell_size = 100;
     int _board_width = 800;
@@ -100,4 +105,6 @@ private:
     Vector2 _firstClick {-1,-1};
     Vector2 _secondClick {-1,-1};
     Color highlightColor; 
+    bool _gameOver = false;
+    Piece::Color _winnerColor = Piece::Color::White;
 };

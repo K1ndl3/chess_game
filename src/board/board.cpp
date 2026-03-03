@@ -1,6 +1,8 @@
 #include "board.hpp"
+#include <algorithm>
 #define WIN_WIDTH 850
 #define WIN_HEIGHT 1000
+#define PAWN_MAX_COL_DIFFERENCE 2
 bool Board::generateBoard()
 {
     Color color{127, 106, 79, 255};
@@ -98,7 +100,7 @@ void Board::drawBoard()
             // refactor this so that we load the textures on the setDefaultBoard function once and then draw in the draw function
         }
     }
-    setHighlightColor(PURPLE); 
+    setHighlightColor(COLOR_PURPLE_HIGHLIGHT); 
 }
 
 void Board::movePiece(int moveCount)
@@ -148,8 +150,7 @@ bool Board::userInput()
         return false;
     }
     if(!validateMove(_firstClick, clicked, _move_count)) {
-        setHighlightColor(RED);
-        std::cout << "Invalid move.1";
+        setHighlightColor(COLOR_RED_HIGHLIGHT);
         return false;
     }   
     movePieceFromTo(_firstClick, clicked);
@@ -172,68 +173,136 @@ void Board::movePieceFromTo(Vector2 startPos, Vector2 endPos)
 
     
     auto& nextPiecePos = board_array[endRow][endCol];
-    nextPiecePos = nullptr;
+    // detect capture of king
+    if (nextPiecePos) {
+        if (nextPiecePos->getType() == Piece::Type::King) {
+            _gameOver = true;
+            _winnerColor = currPiece->getColor();
+        }
+    }
 
+    // move the piece (overwrite target)
+    nextPiecePos = nullptr;
     nextPiecePos = std::move(currPiece);
-    nextPiecePos->setCurrPos(endPos);
+    if (nextPiecePos) nextPiecePos->setCurrPos(endPos);
 }
 
 bool Board::validateMove(Vector2 startingPos, Vector2 endingPos, int moveCount)
 {
-    // so we have a nullptr deref issue
-    int sR = (int)startingPos.x;
-    int sC = (int)startingPos.y;
+    int startCol = (int)startingPos.x;
+    int startRow = (int)startingPos.y;
+    int endCol = (int)endingPos.x;
+    int endRow = (int)endingPos.y;
 
-    int eR = (int)endingPos.x;
-    int eC = (int)endingPos.y;
-    int colDifference = std::abs(sC - eC);
-    int rowDifference = std::abs(sR - eR);
+    // bounds check
+    if (startCol < 0 || startCol >= _num_row || startRow < 0 || startRow >= _num_row) return false;
+    if (endCol < 0 || endCol >= _num_row || endRow < 0 || endRow >= _num_row) return false;
 
-    const auto& currPiece = board_array[sC][sR];
-    const auto& targetSquare = board_array[eC][eR];
+    const auto& currPiece = board_array[startRow][startCol];
+    const auto& targetSquare = board_array[endRow][endCol];
+    if (!currPiece) return false;
+
+    // can't capture your own color
+    if (targetSquare && targetSquare->getColor() == currPiece->getColor()) return false;
+
+    // turn enforcement: _move_count odd -> White's turn (initial _move_count = 1)
+    if (moveCount % 2 == 0 && currPiece->getColor() == Piece::Color::White) {
+        return false;
+    }
+    if (moveCount % 2 != 0 && currPiece->getColor() == Piece::Color::Black) {
+        return false;
+    }
+
+    int dRow = endRow - startRow;
+    int dCol = endCol - startCol;
+    int absRow = std::abs(dRow);
+    int absCol = std::abs(dCol);
 
     auto CurrPieceType = currPiece->getType();
-    if (targetSquare) {
-        if (CurrPieceType == targetSquare->getType()) {
+
+    // helper to check path clear for sliding pieces
+    auto pathClear = [&](int stepRow, int stepCol) {
+        int steps = std::max(std::abs(dRow), std::abs(dCol));
+        for (int i = 1; i < steps; ++i) {
+            int r = startRow + stepRow * i;
+            int c = startCol + stepCol * i;
+            if (board_array[r][c]) return false;
+        }
+        return true;
+    };
+
+    switch (CurrPieceType) {
+        case Piece::Type::Pawn: {
+            int dir = (currPiece->getColor() == Piece::Color::White) ? -1 : 1; // white moves up (-1)
+            // forward move
+            if (dCol == 0) {
+                // one square forward
+                if (dRow == dir && !targetSquare) {
+                    currPiece->setHaveMoved();
+                    return true;
+                }
+                // two squares from starting rank
+                if (!currPiece->getHaveMoved() && dRow == 2 * dir) {
+                    int midRow = startRow + dir;
+                    if (!board_array[midRow][startCol] && !targetSquare) {
+                        currPiece->setHaveMoved();
+                        return true;
+                    }
+                }
+                return false;
+            }
+            // capture diagonally
+            if (absCol == 1 && dRow == dir && targetSquare && targetSquare->getColor() != currPiece->getColor()) {
+                currPiece->setHaveMoved();
+                return true;
+            }
             return false;
         }
-    }
-
-    if (moveCount % 2 == 0 && currPiece->getColor() == Piece::Color::White) { // if move count is even and we try to move a white piece
-        std::cout << "Black turn to move.\n";
-        return false;
-    }
-    if (moveCount % 2 != 0 && currPiece->getColor() == Piece::Color::Black) { // if move count is odd and we try to move a black piece
-        std::cout << "White turn to move.\n";
-        return false;
-    }
-
-    switch (CurrPieceType)
-    {
-    case (Piece::Type::Pawn) :{
-        if (colDifference > 2 || rowDifference != 0) {
-            std::cout << "Invalid move.\n";
+        case Piece::Type::Knight: {
+            if ((absRow == 2 && absCol == 1) || (absRow == 1 && absCol == 2)) return true;
             return false;
-        }    
-        return true;
         }
-    case (Piece::Type::King) :{
-        return true;
-    }
-    case (Piece::Type::Queen) : {
-        return true;
-    }
-    case (Piece::Type::Knight) : {
-        return true;
-    }
-    case (Piece::Type::Rook) : {
-        return true;
-    }
-    case (Piece::Type::Bishop) : {
-        return true;
-    }
-    default:
-        return true;
+        case Piece::Type::King: {
+            if (std::max(absRow, absCol) == 1) return true;
+            // castling not implemented
+            return false;
+        }
+        case Piece::Type::Rook: {
+            if (dRow == 0 && absCol > 0) {
+                int stepRow = 0;
+                int stepCol = (dCol > 0) ? 1 : -1;
+                return pathClear(stepRow, stepCol);
+            }
+            if (dCol == 0 && absRow > 0) {
+                int stepRow = (dRow > 0) ? 1 : -1;
+                int stepCol = 0;
+                return pathClear(stepRow, stepCol);
+            }
+            return false;
+        }
+        case Piece::Type::Bishop: {
+            if (absRow == absCol && absRow > 0) {
+                int stepRow = (dRow > 0) ? 1 : -1;
+                int stepCol = (dCol > 0) ? 1 : -1;
+                return pathClear(stepRow, stepCol);
+            }
+            return false;
+        }
+        case Piece::Type::Queen: {
+            if (absRow == absCol && absRow > 0) {
+                int stepRow = (dRow > 0) ? 1 : -1;
+                int stepCol = (dCol > 0) ? 1 : -1;
+                return pathClear(stepRow, stepCol);
+            }
+            if ((dRow == 0 && absCol > 0) || (dCol == 0 && absRow > 0)) {
+                int stepRow = (dRow == 0) ? 0 : ((dRow > 0) ? 1 : -1);
+                int stepCol = (dCol == 0) ? 0 : ((dCol > 0) ? 1 : -1);
+                return pathClear(stepRow, stepCol);
+            }
+            return false;
+        }
+        default:
+            return false;
     }
 
 }

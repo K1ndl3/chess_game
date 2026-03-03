@@ -49,6 +49,13 @@ class Piece {
     
     void initTexture();
 
+    inline void setHaveMoved() {
+        _haveMoved = true;
+    }
+
+    inline bool getHaveMoved() {
+        return _haveMoved;
+    }
 
     private:
     Type _type;
@@ -57,6 +64,7 @@ class Piece {
     int _rowPos;
     int _colPos;
     Vector2 _currPos;
+    bool _haveMoved = false;
 
     std::map<std::pair<Piece::Type, Piece::Color>, const char*> _assets_path {
         {{Piece::Type::Pawn, Piece::Color::White}, "./assets/white_pawn.png"},
