@@ -1,12 +1,12 @@
-# ♟️ Chess Game
+#  Chess Game
 
 A C++ chess game implementation built with [Raylib](https://www.raylib.com/), featuring a fully interactive 8x8 chess board with graphical piece rendering and user input handling.
 
-## 📋 Overview
+##  Overview
 
 This project is a graphical chess game written in modern C++ that leverages the Raylib graphics library to render a traditional chess board and pieces. The game includes piece initialization in standard chess starting positions, visual rendering of the board and pieces, and user interaction capabilities for selecting and moving pieces.
 
-## ✨ Features
+##  Features
 
 - **Interactive Chess Board**: 8x8 chess board with alternating square colors (gray and black)
 - **Chess Pieces**: All standard chess pieces (King, Queen, Rook, Bishop, Knight, Pawn) with both white and black variants
@@ -16,7 +16,7 @@ This project is a graphical chess game written in modern C++ that leverages the 
 - **Piece Highlighting**: Visual feedback when selecting squares
 - **Starting Position**: Automatic setup of pieces in standard chess starting positions
 
-## 🏗️ Architecture
+##  Architecture
 
 The project is organized into several key components:
 
@@ -68,7 +68,7 @@ Game::run()
 - `validateMove()` - Check if a move is legal
 - `movePieceFromTo()` - Move a piece from one square to another
 
-## 🛠️ Building and Running
+##  Building and Running
 
 ### Prerequisites
 
@@ -99,7 +99,7 @@ g++ -std=c++17 src/main.cpp src/game/game.cpp src/board/board.cpp src/piece/piec
 ./chess_game
 ```
 
-## 🎮 How to Play
+##  How to Play
 
 1. **Launch** the game executable
 2. **View** the chess board with pieces in their starting positions
@@ -107,7 +107,7 @@ g++ -std=c++17 src/main.cpp src/game/game.cpp src/board/board.cpp src/piece/piec
 4. **Click** on a destination square to move the selected piece
 5. **Game Loop**: The board will render and respond to your input continuously
 
-## 🗂️ File Structure
+##  File Structure
 
 ```
 chess_game/
@@ -129,12 +129,12 @@ chess_game/
 └── README.md                 # This file
 ```
 
-## 📦 Dependencies
+##  Dependencies
 
 - **Raylib** - Graphics and input handling library
   - For installation, visit: https://www.raylib.com/
 
-## 🚀 Future Enhancements
+##  Future Enhancements
 
 - [ ] Complete move validation for all piece types
 - [ ] Implement turn-based player system
@@ -146,7 +146,7 @@ chess_game/
 - [ ] Save and load game state
 - [ ] Network multiplayer support
 
-## 📝 Notes
+##  Notes
 
 - The project demonstrates modern C++ concepts including:
   - Smart pointers (`std::unique_ptr`)
